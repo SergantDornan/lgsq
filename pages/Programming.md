@@ -1,0 +1,17 @@
+# C++
+- General c++ help -[[cpphelp]]
+- STL help - [[stlhelp]]
+-
+- # Git
+- githelp - [[githelp]]
+-
+- # G++ help
+- general g++ help - [[gpphelp]]
+- libraries guide - [[libhelp]]
+-
+- # Make
+- general make help - [[makehelp]]
+-
+- # Lnx
+- general ubuntu commands - [[lnxhelp]]
+- lnx filesystem help - [[lnxfilesystemhelp]]
