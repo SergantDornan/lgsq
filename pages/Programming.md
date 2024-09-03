@@ -1,23 +1,34 @@
-# C++
-- General c++ help -[[cpphelp]]
-- STL help - [[stlhelp]]
--
+# Problems
+collapsed:: true
+	- [[progproblems]]
+- # C++
+  collapsed:: true
+	- General c++ help -[[cpphelp]]
+	- STL help - [[stlhelp]]
+	- Threads - [[threadsc++]]
+	- Chrono - [[chrono]]
+	- Чтение и запись в файл [[filereading]]
+	- Regex [[Regex]]
 - # Git
-- githelp - [[githelp]]
--
+  collapsed:: true
+	- githelp - [[githelp]]
 - # G++ help
-- general g++ help - [[gpphelp]]
-- libraries guide - [[libhelp]]
--
+  collapsed:: true
+	- general g++ help - [[gpphelp]]
+	- libraries guide - [[libhelp]]
 - # GDB
-- general gdb help - [[gdbhelp]]
--
+  collapsed:: true
+	- general gdb help - [[gdbhelp]]
 - # Markdown
-- [[markdownhelp]]
--
+  collapsed:: true
+	- [[markdownhelp]]
 - # Make
-- general make help - [[makehelp]]
--
+  collapsed:: true
+	- general make help - [[makehelp]]
 - # Lnx
-- general ubuntu commands - [[lnxhelp]]
-- lnx filesystem help - [[lnxfilesystemhelp]]
+  collapsed:: true
+	- general ubuntu commands - [[lnxhelp]]
+	- lnx filesystem help - [[lnxfilesystemhelp]]
+- # Windows
+  collapsed:: true
+	- Активация любой винды навсегда и MS office навсегда по этой ссылке  https://github.com/massgravel/Microsoft-Activation-Scripts

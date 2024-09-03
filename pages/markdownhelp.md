@@ -18,7 +18,6 @@
 	  ```
 	  </div>
 	- ## General
-	  collapsed:: true
 		- <div>\LARGE{smth}
 		  \Large{}
 		  \Huge{}
@@ -39,7 +38,12 @@
 		  ```
 		   
 		  подпись под болшими операторами
+		- $\neq$ 
+		  ```
+		  \neq
+		  ```
 	- ## Matrix
+	  collapsed:: true
 		- ```
 		  \begin{matrix}
 		     a & b \\
@@ -94,7 +98,6 @@
 		  | 𝜛*ϖ* `\varpi` | 𝜚*ϱ* `\varrho` | 𝜍*ς* `\varsigma` | 𝜑*φ* `\varphi` |
 		  | ϝϝ `\digamma` |
 	- ## Logic and Sets
-	  collapsed:: true
 		- | ∀ `\forall` | ∁∁ `\complement` | ∴∴ `\therefore` | ∅∅ `\emptyset` |
 		  | ∃ `\exists` | ⊂⊂ `\subset` | ∵∵ `\because` | ∅∅ `\empty` |
 		  | ∃∃ `\exist` | ⊃⊃ `\supset` | ↦↦ `\mapsto` | ∅∅ `\varnothing` |
@@ -135,6 +138,7 @@
 		  | inf⁡inf `\inf` | max⁡max `\max` | sup⁡sup `\sup` |  |
 		  | f⁡f `\operatorname*{f}` | f⁡f `\operatornamewithlimits{f}` |
 	- ## EXMP
+	  collapsed:: true
 		- ```
 		  \LARGE{\sum_{
 		  \begin{subarray}{l}

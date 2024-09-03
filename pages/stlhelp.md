@@ -66,3 +66,13 @@ collapsed:: true
 	  .push_front(el)
 	  .at(index)
 	  .insert()
+- # other stuff
+	- Можно посчитать количество элементов в векторе (возможно не только в векторе) с каким то условием
+	  std::count_if(<left_brdr>, <right_brdr>, comparator);
+	  
+	  Пример на векторе:
+	  ```c++
+	  std::vector<int> v(1000);
+	  int x = std::count_if(v.begin(), v.end(), [](int i){return i == 0;});
+	  // Посчитали количество нулей
+	  ```

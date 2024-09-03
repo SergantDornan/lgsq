@@ -33,6 +33,7 @@ collapsed:: true
 - # functions
   collapsed:: true
 	- ## func pointers
+	  collapsed:: true
 		- Указатели на функции:
 		  тип (*имя_указателя) (типы_параметров);
 		- ```
@@ -43,6 +44,28 @@ collapsed:: true
 		       message();
 		  }
 		  ```
+	- ## Lambda
+	  collapsed:: true
+		- ```c++
+		  auto F = [&solution, &power](long double xi) -> long double{
+		  		long double result = 0;
+		  		for(int i = 0; i < power + 1; ++i){
+		  			result += solution[i] * pow(xi, power - i);
+		  		}
+		  		return result;
+		  	};
+		  ```
+		- [] - захват переменных извне, иначе нельзя будет использовать локальные переменные внутри лямбда функции, надо захватывать
+		  
+		  [&] - захватить все что есть по ссылке
+		- (long double xi) - аргументы функции
+		- -> long double  - возвращаемое значение
+- # Comparator
+  collapsed:: true
+	- ```c++
+	  auto comp = [](T x, T y){return pr(x) < pr(y)}; //Обязательно оператор <
+	  std::sort(begin,end,comp);
+	  ```
 - # other stuff
   collapsed:: true
 	- std::getline(std::cin, str, ',');

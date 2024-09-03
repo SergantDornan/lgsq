@@ -16,8 +16,56 @@ collapsed:: true
 	  g++ <flags> -o <new_file_name> <all_files_needed>
 	  
 	  g++ -v <file_name.cpp> - компилятор в режиме расширенного вывода (например можно посмотреть все используемые библиотеки)
+- # Изменение точки входа
+	- Это нечто работает чисто только с С, чтобы работало в С++ нужно поменять точку входа как extern "C"
+	- **!!!!!!! main из main.cpp НЕЛЬЗЯ вызывать вообще ниоткуда, иначе будет SEGFAULT (хз почему) **
+	- Пусть есть файлы
+	- algs.cpp
+	  ```c++
+	  #include <iostream>
+	  extern void func1();
+	  int foo();
+	  extern "C" int entry(int argc, char* argv[]){
+	  	std::cout << atoi(argv[1]) << std::endl;
+	  	std::cout << "AAAAA" << std::endl;
+	  	foo();
+	      func1();
+	  	return 0;
+	  }
+	  ```
+	- main.cpp
+	  ```c++
+	  #include <iostream>
+	  extern void func1();
+	  int foo(){
+	    std::cout << "FOO" << std::endl;
+	  }
+	  int main(){
+	  	std::cout << "1000" << std::endl;
+	  	std::cout << "MAIN" << std::endl;
+	      func1();
+	  	return 0;
+	  }
+	  ```
+	- И до кучи, чтобы жизнь малиной не казалась st.cpp
+	  ```c++
+	  #include <iostream>
+	  extern void func1(){
+	  	std::cout << "1" << std::endl;
+	  }
+	  ```
+	- Задача - собрать проект так, чтобы точка входа была в algs.cpp с применением статической библиотеки, полученной из st.cpp, используемой в main.cpp и чтобы все работало
+	- Решение:
+	- ```bash
+	  g++ -c -o st.o st.cpp
+	  ar rc libLIB1.a st.o 
+	  ranlib libLIB1.a #собрали библиотеку
+	  g++ -c -o main.o main.cpp #скомпилировали main, библиотеку подрубать не надо
+	  g++ -c -o algs.o algs.cpp #скомпилировали algs, библиотеку также подрубать не надо
+	  g++ main.o algs.o -Wl,--defsym=main=entry -L. -lLIB1 -o prog
+	  ```
+	  Последняя команда - сборка из объектых файлов, подключение библиотеки + через флаг -Wl указания линковщику изменить точку входа --defsym=main=<entry_point_name>
 - # Флаги
-  collapsed:: true
 	- ## Оптимизация
 		- -O0: Отключение оптимизации (по умолчанию).
 		   -O1: Базовая оптимизация, разумный баланс скорости и размера.
@@ -44,6 +92,7 @@ collapsed:: true
 		   -L <путь>: Добавление пути к директориям с библиотеками.
 		   -l <имя_библиотеки>: Линковка статической или динамической библиотеки.
 	- ##  Другие флаги
+	  collapsed:: true
 		- -static:  Статическая линковка всех зависимостей.
 		   -shared:  Создание динамической библиотеки.
 		   -fPIC:  Создание позитивно-независимого кода (PIC), необходимо для компиляции объектных файлов динамических библиотек.

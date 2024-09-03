@@ -22,6 +22,7 @@ collapsed:: true
 	  или:
 	  git clone -v <url>
 - ## Откат к пред версиям
+  collapsed:: true
 	- git reset --hard HEAD~1  (откат к предыдущему коммиту с удалением коммита)
 	  git reset HEAD~1 (откат к пред коммиту без удаления из истории)
 	  git log --oneline
