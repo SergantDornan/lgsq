@@ -54,9 +54,9 @@ collapsed:: true
 - # Project Structure
   collapsed:: true
 	- Описание всех папок, их названий и что туда надо складывать, чтобы make работал
-	- ## deps
+	- ## depsAndObject
 	  collapsed:: true
-		- Наполняется автоматически, здесь хранятся файлы зависимостей make
+		- Наполняется автоматически, здесь хранятся файлы зависимостей make и также объектные файлы
 	- ## include
 	  collapsed:: true
 		- здесь хранятся все header файлы основного проекта (не библиотеки)
@@ -87,12 +87,19 @@ collapsed:: true
 	  Makefile
 	  можно другие файлы .h и .cpp
 - # Universal makefiles
-  collapsed:: true
 	- Чтобы все работало надо построить проект по Project structure выше или заменить названия папок в Makefile
 	- ### Команды make во всех последующих файлах:
-	  mrproper - удаление всех файлов, которые мог создавать make, возвращение к иходному коду
-	  
-	  libs - только лишь собрать библиотеки собственного написания (если такие имеются)
+	  collapsed:: true
+		- mrproper - удаление всех файлов, которые мог создавать make, возвращение к иходному коду
+		- libs - только лишь собрать библиотеки собственного написания (если такие имеются)
+		- libstatic - собрать только собственную статическую библиотеку
+		- libshared - собрать только собственную динамическую библиотеку
+		- static - собрать проект только с применением статических библиотек (своей и чужих)
+		- MYstatic - собрать проект только с применением своей статической библиотеки
+		- OTHERstatic - собрать проект только с применением чужих статических библиотек
+		- shared - собрать проект только с применением динамических библиотек (своих и чужих)
+		- MYshared - собрать проект только с применением своих динамических библиотек
+		- OTHERshared - собрать проект только с примененением чужих динамических библиотек
 	- ## Полный пакет (наличие всех видов библиотек, наличие кода к собственным библиотекам всех видов)
 	  collapsed:: true
 		- collapsed:: true
@@ -100,17 +107,18 @@ collapsed:: true
 		  OUTPUT=prog
 		  ROOTDIR=.
 		  SOURCEDIR=./lib
-		  CODEDIRS=$(ROOTDIR) $(SOURCEDIR)
 		  INCDIRS=. ./include/
-		  DEPDIR =./deps
+		  DEPOBJDIR =./depsAndObjects
 		  STATLIBS=./staticLibs
 		  SHLIBS=./sharedLibs
 		  Static_lib_folder_code=./staticLibsSource
 		  Shared_lib_folder_code=./sharedLibsSource
-		  SOURCESTATIC=$(Static_lib_folder_code)/source
-		  SOURCESHARED=$(Shared_lib_folder_code)/source
-		  INCDIRSTATIC=$(Static_lib_folder_code)/header
-		  INCDIRSHARED=$(Shared_lib_folder_code)/header
+		  lib_code_source=/source
+		  lib_code_headers=/header
+		  SOURCESTATIC=$(Static_lib_folder_code)$(lib_code_source)
+		  SOURCESHARED=$(Shared_lib_folder_code)$(lib_code_source)
+		  INCDIRSTATIC=$(Static_lib_folder_code)$(lib_code_headers)
+		  INCDIRSHARED=$(Shared_lib_folder_code)$(lib_code_headers)
 		  STATICLIBGEN_name=static
 		  SHAREDLIBGEN_name=shared
 		  STLIBGEN=$(STATLIBS)/lib$(STATICLIBGEN_name).a
@@ -125,50 +133,96 @@ collapsed:: true
 		  CFLAGS_shared=$(GENERALFLAGS) $(foreach D,$(INCDIRSHARED),-I$(D)) $(OPT) $(DEPFLAGS)
 		  CFILESROOT=$(foreach D, $(ROOTDIR), $(wildcard $(D)/*.cpp))
 		  CFILESSOURCE=$(foreach D, $(SOURCEDIR), $(wildcard $(D)/*.cpp))
-		  CFILES=$(CFILESROOT) $(CFILESSOURCE)
 		  
-		  OBJECTS=$(patsubst %.cpp, %.o, $(CFILES))
-		  DEPFILES=$(patsubst %.cpp, %.d, $(CFILES))
 		  STATICCFILES=$(foreach D, $(SOURCESTATIC), $(wildcard $(D)/*.cpp))
 		  SHAREDCFILES=$(foreach D, $(SOURCESHARED), $(wildcard $(D)/*.cpp))
-		  OBJECTSSTATIC=$(patsubst %.cpp, %.o, $(STATICCFILES))
-		  OBJECTSSHARED=$(patsubst %.cpp, %.o, $(SHAREDCFILES))
-		  DEPFILES_libs=$(patsubst %.cpp, %.d, $(STATICCFILES)) $(patsubst %.cpp, %.d, $(SHAREDCFILES))
-		  DEPFILES_final=$(patsubst .%.cpp, $(DEPDIR)%.d, $(CFILESROOT)) $(patsubst ./lib%.cpp, $(DEPDIR)%.d, $(CFILESSOURCE)) $(patsubst $(SOURCESTATIC)/%.cpp, $(DEPDIR)/%.d, $(STATICCFILES)) $(patsubst $(SOURCESHARED)/%.cpp, $(DEPDIR)/%.d, $(SHAREDCFILES))
+		  
+		  OBJECTSSTATIC=$(patsubst $(Static_lib_folder_code)$(lib_code_source)%.cpp, $(DEPOBJDIR)%.o, $(STATICCFILES))
+		  OBJECTSSHARED=$(patsubst $(Shared_lib_folder_code)$(lib_code_source)%.cpp, $(DEPOBJDIR)%.o, $(SHAREDCFILES))
+		  
+		  OBJECTS=$(patsubst $(ROOTDIR)%.cpp, $(DEPOBJDIR)%.o, $(CFILESROOT)) $(patsubst $(SOURCEDIR)%.cpp, $(DEPOBJDIR)%.o, $(CFILESSOURCE))
+		  DEPFILES=$(patsubst $(ROOTDIR)%.cpp, $(DEPOBJDIR)%.d, $(CFILESROOT)) $(patsubst $(SOURCEDIR)%.cpp, $(DEPOBJDIR)%.d, $(CFILESSOURCE)) $(patsubst $(SOURCESTATIC)/%.cpp, $(DEPOBJDIR)/%.d, $(STATICCFILES)) $(patsubst $(SOURCESHARED)/%.cpp, $(DEPOBJDIR)/%.d, $(SHAREDCFILES))
 		  LIBSTATIC_files=$(foreach D, $(STATLIBS), $(wildcard $(D)/lib*.a))
 		  LIBSHARED_files=$(foreach D, $(SHLIBS), $(wildcard $(D)/lib*.so))
 		  LIBSTATIC_names=$(patsubst $(STATLIBS)/lib%.a, %, $(LIBSTATIC_files))
 		  LIBSHARED_names=$(patsubst $(SHLIBS)/lib%.so, %, $(LIBSHARED_files))
 		  
-		  all: $(OUTPUT)
-		  	rm -rf $(OBJECTS)
 		  
-		  $(OUTPUT): $(OBJECTS)
-		  	mv $(DEPFILES) $(DEPDIR)
-		  	$(MAKE) libs
-		  	$(CPPC) $^ $(foreach D,$(STATLIBS),-L$(D)) $(foreach D,$(SHLIBS),-L$(D)) $(foreach D,$(LIBSTATIC_names),-l$(D)) $(foreach D,$(LIBSHARED_names),-l$(D)) -l$(STATICLIBGEN_name) -l$(SHAREDLIBGEN_name) -o $@
+		  
+		  all:$(OUTPUT)
+		  	@echo
+		  	@echo
+		  	@echo
+		  	@echo RUN THIS COMMAND:
 		  	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(SHLIBS)
 		  
-		  %.o:%.cpp
+		  
+		  -include $(DEPFILES) 
+		  
+		  $(OUTPUT): $(OBJECTS) $(STLIBGEN) $(SHLIBGEN)
+		  	$(CPPC) $^ $(foreach D,$(STATLIBS),-L$(D)) $(foreach D,$(SHLIBS),-L$(D)) $(foreach D,$(LIBSTATIC_names),-l$(D)) $(foreach D,$(LIBSHARED_names),-l$(D)) -l$(STATICLIBGEN_name) -l$(SHAREDLIBGEN_name) -o $@
+		  
+		  $(DEPOBJDIR)/%.o:$(ROOTDIR)/%.cpp
+		  	$(CPPC) $(CFLAGS) -c -o $@ $<
+		  
+		  $(DEPOBJDIR)/%.o:$(SOURCEDIR)/%.cpp
 		  	$(CPPC) $(CFLAGS) -c -o $@ $<
 		  
 		  mrproper:
-		  	rm -rf $(OUTPUT) $(OBJECTS) $(DEPFILES_final) $(STLIBGEN) $(SHLIBGEN)
+		  	rm -rf $(OUTPUT) $(OBJECTS) $(DEPFILES) $(STLIBGEN) $(SHLIBGEN) $(OBJECTSSTATIC) $(OBJECTSSHARED)
 		  
-		  libs: $(OBJECTSSTATIC) $(OBJECTSSHARED)
-		  	mv $(DEPFILES_libs) $(DEPDIR)
+		  static:$(OBJECTS) $(STLIBGEN)
+		  	$(CPPC) $^ $(foreach D,$(STATLIBS),-L$(D)) $(foreach D,$(LIBSTATIC_names),-l$(D)) -l$(STATICLIBGEN_name) -o $(OUTPUT)
+		  
+		  shared:$(OBJECTS) $(SHLIBGEN)
+		  	$(CPPC) $^ $(foreach D,$(SHLIBS),-L$(D)) $(foreach D,$(LIBSHARED_names),-l$(D)) -l$(SHAREDLIBGEN_name) -o $(OUTPUT)
+		  	@echo
+		  	@echo
+		  	@echo
+		  	@echo RUN THIS COMMAND:
+		  	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(SHLIBS)
+		  
+		  MYstatic:$(OBJECTS) $(STLIBGEN)
+		  	$(CPPC) $^ $(foreach D,$(STATLIBS),-L$(D)) -l$(STATICLIBGEN_name) -o $(OUTPUT)
+		  
+		  MYshared:$(OBJECTS) $(SHLIBGEN)
+		  	$(CPPC) $^ $(foreach D,$(SHLIBS),-L$(D)) -l$(SHAREDLIBGEN_name) -o $(OUTPUT)
+		  	@echo
+		  	@echo
+		  	@echo
+		  	@echo RUN THIS COMMAND:
+		  	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(SHLIBS)
+		  
+		  OTHERstatic:$(OBJECTS)
+		  	$(CPPC) $^ $(foreach D,$(STATLIBS),-L$(D)) $(foreach D,$(LIBSTATIC_names),-l$(D)) -o $(OUTPUT)
+		  
+		  OTHERshared:$(OBJECTS)
+		  	$(CPPC) $^ $(foreach D,$(SHLIBS),-L$(D)) -o $(OUTPUT)
+		  	@echo
+		  	@echo
+		  	@echo
+		  	@echo RUN THIS COMMAND:
+		  	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(SHLIBS)
+		  
+		  libshared:$(SHLIBHEN)
+		  
+		  libstatic:$(STLIBGEN)
+		  
+		  libs:$(STLIBGEN) $(SHLIBGEN)
+		  
+		  $(STLIBGEN):$(OBJECTSSTATIC)
 		  	ar rc $(STLIBGEN) $(OBJECTSSTATIC)
 		  	ranlib $(STLIBGEN)
-		  	$(CPPC) -shared -o $(SHLIBGEN) $(OBJECTSSHARED)
-		  	rm -rf $(OBJECTSSTATIC) $(OBJECTSSHARED)
 		  
-		  sh%.o:sh%.cpp
+		  $(SHLIBGEN):$(OBJECTSSHARED)
+		  	$(CPPC) -shared -o $(SHLIBGEN) $(OBJECTSSHARED)
+		  
+		  $(DEPOBJDIR)/%.o:$(SOURCESHARED)/%.cpp
 		  	$(CPPC) $(CFLAGS_shared) -fPIC -c $< -o $@
 		  
-		  st%.o:st%.cpp
+		  $(DEPOBJDIR)/%.o:$(SOURCESTATIC)/%.cpp
 		  	$(CPPC) $(CFLAGS_static) -c $< -o $@
 		  
-		  -include $(DEPFILES_final) 
 		  ```
 			- file:///home/andrew/MasterFolder/f.txt
 	- ## Мастер статист (только чужие статические библиотеки и статические библиотеки, которые пишешь сам)
@@ -177,13 +231,14 @@ collapsed:: true
 		  OUTPUT=prog
 		  ROOTDIR=.
 		  SOURCEDIR=./lib
-		  CODEDIRS=$(ROOTDIR) $(SOURCEDIR)
 		  INCDIRS=. ./include/
-		  DEPDIR =./deps
+		  DEPOBJDIR =./depsAndObjects
 		  STATLIBS=./staticLibs
 		  Static_lib_folder_code=./staticLibsSource
-		  SOURCESTATIC=$(Static_lib_folder_code)/source
-		  INCDIRSTATIC=$(Static_lib_folder_code)/header
+		  lib_code_source=/source
+		  lib_code_headers=/header
+		  SOURCESTATIC=$(Static_lib_folder_code)$(lib_code_source)
+		  INCDIRSTATIC=$(Static_lib_folder_code)$(lib_code_headers)
 		  STATICLIBGEN_name=static
 		  STLIBGEN=$(STATLIBS)/lib$(STATICLIBGEN_name).a
 		  CPPC=g++
@@ -195,40 +250,50 @@ collapsed:: true
 		  CFLAGS_static=$(GENERALFLAGS) $(foreach D,$(INCDIRSTATIC),-I$(D)) $(OPT) $(DEPFLAGS)
 		  CFILESROOT=$(foreach D, $(ROOTDIR), $(wildcard $(D)/*.cpp))
 		  CFILESSOURCE=$(foreach D, $(SOURCEDIR), $(wildcard $(D)/*.cpp))
-		  CFILES=$(CFILESROOT) $(CFILESSOURCE)
-		  OBJECTS=$(patsubst %.cpp, %.o, $(CFILES))
-		  DEPFILES=$(patsubst %.cpp, %.d, $(CFILES))
+		  
 		  STATICCFILES=$(foreach D, $(SOURCESTATIC), $(wildcard $(D)/*.cpp))
-		  OBJECTSSTATIC=$(patsubst %.cpp, %.o, $(STATICCFILES))
-		  DEPFILES_libs=$(patsubst %.cpp, %.d, $(STATICCFILES))
-		  DEPFILES_final=$(patsubst .%.cpp, $(DEPDIR)%.d, $(CFILESROOT)) $(patsubst ./lib%.cpp, $(DEPDIR)%.d, $(CFILESSOURCE)) $(patsubst $(SOURCESTATIC)/%.cpp, $(DEPDIR)/%.d, $(STATICCFILES))
+		  
+		  OBJECTSSTATIC=$(patsubst $(Static_lib_folder_code)$(lib_code_source)%.cpp, $(DEPOBJDIR)%.o, $(STATICCFILES))
+		  
+		  OBJECTS=$(patsubst $(ROOTDIR)%.cpp, $(DEPOBJDIR)%.o, $(CFILESROOT)) $(patsubst $(SOURCEDIR)%.cpp, $(DEPOBJDIR)%.o, $(CFILESSOURCE))
+		  DEPFILES=$(patsubst $(ROOTDIR)%.cpp, $(DEPOBJDIR)%.d, $(CFILESROOT)) $(patsubst $(SOURCEDIR)%.cpp, $(DEPOBJDIR)%.d, $(CFILESSOURCE)) $(patsubst $(SOURCESTATIC)/%.cpp, $(DEPOBJDIR)/%.d, $(STATICCFILES))
 		  LIBSTATIC_files=$(foreach D, $(STATLIBS), $(wildcard $(D)/lib*.a))
 		  LIBSTATIC_names=$(patsubst $(STATLIBS)/lib%.a, %, $(LIBSTATIC_files))
 		  
-		  all: $(OUTPUT)
-		  	rm -rf $(OBJECTS)
 		  
-		  $(OUTPUT): $(OBJECTS)
-		  	mv $(DEPFILES) $(DEPDIR)
-		  	$(MAKE) libs
+		  
+		  all:$(OUTPUT)
+		  
+		  
+		  -include $(DEPFILES) 
+		  
+		  $(OUTPUT): $(OBJECTS) $(STLIBGEN)
 		  	$(CPPC) $^ $(foreach D,$(STATLIBS),-L$(D)) $(foreach D,$(LIBSTATIC_names),-l$(D)) -l$(STATICLIBGEN_name) -o $@
 		  
-		  %.o:%.cpp
+		  $(DEPOBJDIR)/%.o:$(ROOTDIR)/%.cpp
+		  	$(CPPC) $(CFLAGS) -c -o $@ $<
+		  
+		  $(DEPOBJDIR)/%.o:$(SOURCEDIR)/%.cpp
 		  	$(CPPC) $(CFLAGS) -c -o $@ $<
 		  
 		  mrproper:
-		  	rm -rf $(OUTPUT) $(OBJECTS) $(DEPFILES_final) $(STLIBGEN)
+		  	rm -rf $(OUTPUT) $(OBJECTS) $(DEPFILES) $(STLIBGEN) $(OBJECTSSTATIC)
 		  
-		  libs: $(OBJECTSSTATIC) $(OBJECTSSHARED)
-		  	mv $(DEPFILES_libs) $(DEPDIR)
+		  MYstatic:$(OBJECTS) $(STLIBGEN)
+		  	$(CPPC) $^ $(foreach D,$(STATLIBS),-L$(D)) -l$(STATICLIBGEN_name) -o $(OUTPUT)
+		  
+		  OTHERstatic:$(OBJECTS)
+		  	$(CPPC) $^ $(foreach D,$(STATLIBS),-L$(D)) $(foreach D,$(LIBSTATIC_names),-l$(D)) -o $(OUTPUT)
+		  
+		  libs:$(STLIBGEN)
+		  
+		  $(STLIBGEN):$(OBJECTSSTATIC)
 		  	ar rc $(STLIBGEN) $(OBJECTSSTATIC)
 		  	ranlib $(STLIBGEN)
-		  	rm -rf $(OBJECTSSTATIC)
 		  
-		  st%.o:st%.cpp
+		  $(DEPOBJDIR)/%.o:$(SOURCESTATIC)/%.cpp
 		  	$(CPPC) $(CFLAGS_static) -c $< -o $@
 		  
-		  -include $(DEPFILES_final)
 		  ```
 	- ## Мастер динамист (только чужие динамические библиотеки и динамические библиотеки, которые написал сам)
 	  collapsed:: true
@@ -236,13 +301,14 @@ collapsed:: true
 		  OUTPUT=prog
 		  ROOTDIR=.
 		  SOURCEDIR=./lib
-		  CODEDIRS=$(ROOTDIR) $(SOURCEDIR)
 		  INCDIRS=. ./include/
-		  DEPDIR =./deps
+		  DEPOBJDIR =./depsAndObjects
 		  SHLIBS=./sharedLibs
 		  Shared_lib_folder_code=./sharedLibsSource
-		  SOURCESHARED=$(Shared_lib_folder_code)/source
-		  INCDIRSHARED=$(Shared_lib_folder_code)/header
+		  lib_code_source=/source
+		  lib_code_headers=/header
+		  SOURCESHARED=$(Shared_lib_folder_code)$(lib_code_source)
+		  INCDIRSHARED=$(Shared_lib_folder_code)$(lib_code_headers)
 		  SHAREDLIBGEN_name=shared
 		  SHLIBGEN=$(SHLIBS)/lib$(SHAREDLIBGEN_name).so
 		  CPPC=g++
@@ -254,44 +320,63 @@ collapsed:: true
 		  CFLAGS_shared=$(GENERALFLAGS) $(foreach D,$(INCDIRSHARED),-I$(D)) $(OPT) $(DEPFLAGS)
 		  CFILESROOT=$(foreach D, $(ROOTDIR), $(wildcard $(D)/*.cpp))
 		  CFILESSOURCE=$(foreach D, $(SOURCEDIR), $(wildcard $(D)/*.cpp))
-		  CFILES=$(CFILESROOT) $(CFILESSOURCE)
-		  OBJECTS=$(patsubst %.cpp, %.o, $(CFILES))
-		  DEPFILES=$(patsubst %.cpp, %.d, $(CFILES))
+		  
 		  SHAREDCFILES=$(foreach D, $(SOURCESHARED), $(wildcard $(D)/*.cpp))
-		  OBJECTSSHARED=$(patsubst %.cpp, %.o, $(SHAREDCFILES))
-		  DEPFILES_libs=$(patsubst %.cpp, %.d, $(SHAREDCFILES))
-		  DEPFILES_final=$(patsubst .%.cpp, $(DEPDIR)%.d, $(CFILESROOT)) $(patsubst ./lib%.cpp, $(DEPDIR)%.d, $(CFILESSOURCE)) $(patsubst $(SOURCESHARED)/%.cpp, $(DEPDIR)/%.d, $(SHAREDCFILES))
+		  
+		  OBJECTSSHARED=$(patsubst $(Shared_lib_folder_code)$(lib_code_source)%.cpp, $(DEPOBJDIR)%.o, $(SHAREDCFILES))
+		  
+		  OBJECTS=$(patsubst $(ROOTDIR)%.cpp, $(DEPOBJDIR)%.o, $(CFILESROOT)) $(patsubst $(SOURCEDIR)%.cpp, $(DEPOBJDIR)%.o, $(CFILESSOURCE))
+		  DEPFILES=$(patsubst $(ROOTDIR)%.cpp, $(DEPOBJDIR)%.d, $(CFILESROOT)) $(patsubst $(SOURCEDIR)%.cpp, $(DEPOBJDIR)%.d, $(CFILESSOURCE)) $(patsubst $(SOURCESHARED)/%.cpp, $(DEPOBJDIR)/%.d, $(SHAREDCFILES))
 		  LIBSHARED_files=$(foreach D, $(SHLIBS), $(wildcard $(D)/lib*.so))
 		  LIBSHARED_names=$(patsubst $(SHLIBS)/lib%.so, %, $(LIBSHARED_files))
 		  
-		  all: $(OUTPUT)
-		  	rm -rf $(OBJECTS)
-		      @echo
+		  
+		  
+		  all:$(OUTPUT)
+		  	@echo
 		  	@echo
 		  	@echo
 		  	@echo RUN THIS COMMAND:
 		  	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(SHLIBS)
 		  
-		  $(OUTPUT): $(OBJECTS)
-		  	mv $(DEPFILES) $(DEPDIR)
-		  	$(MAKE) libs
+		  
+		  -include $(DEPFILES) 
+		  
+		  $(OUTPUT): $(OBJECTS) $(SHLIBGEN)
 		  	$(CPPC) $^ $(foreach D,$(SHLIBS),-L$(D)) $(foreach D,$(LIBSHARED_names),-l$(D)) -l$(SHAREDLIBGEN_name) -o $@
 		  
-		  %.o:%.cpp
+		  $(DEPOBJDIR)/%.o:$(ROOTDIR)/%.cpp
+		  	$(CPPC) $(CFLAGS) -c -o $@ $<
+		  
+		  $(DEPOBJDIR)/%.o:$(SOURCEDIR)/%.cpp
 		  	$(CPPC) $(CFLAGS) -c -o $@ $<
 		  
 		  mrproper:
-		  	rm -rf $(OUTPUT) $(OBJECTS) $(DEPFILES_final) $(SHLIBGEN)
+		  	rm -rf $(OUTPUT) $(OBJECTS) $(DEPFILES) $(SHLIBGEN) $(OBJECTSSHARED)
 		  
-		  libs: $(OBJECTSSTATIC) $(OBJECTSSHARED)
-		  	mv $(DEPFILES_libs) $(DEPDIR)
+		  MYshared:$(OBJECTS) $(SHLIBGEN)
+		  	$(CPPC) $^ $(foreach D,$(SHLIBS),-L$(D)) -l$(SHAREDLIBGEN_name) -o $(OUTPUT)
+		  	@echo
+		  	@echo
+		  	@echo
+		  	@echo RUN THIS COMMAND:
+		  	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(SHLIBS)
+		  
+		  OTHERshared:$(OBJECTS)
+		  	$(CPPC) $^ $(foreach D,$(SHLIBS),-L$(D)) -o $(OUTPUT)
+		  	@echo
+		  	@echo
+		  	@echo
+		  	@echo RUN THIS COMMAND:
+		  	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(SHLIBS)
+		  
+		  libs:$(SHLIBGEN)
+		  
+		  $(SHLIBGEN):$(OBJECTSSHARED)
 		  	$(CPPC) -shared -o $(SHLIBGEN) $(OBJECTSSHARED)
-		  	rm -rf $(OBJECTSSHARED)
 		  
-		  sh%.o:sh%.cpp
+		  $(DEPOBJDIR)/%.o:$(SOURCESHARED)/%.cpp
 		  	$(CPPC) $(CFLAGS_shared) -fPIC -c $< -o $@
-		  
-		  -include $(DEPFILES_final)
 		  ```
 	- ## Альфонсик (только чужие динамические библиотеки и чужие статические библиотеки)
 	  collapsed:: true
@@ -299,9 +384,8 @@ collapsed:: true
 		  OUTPUT=prog
 		  ROOTDIR=.
 		  SOURCEDIR=./lib
-		  CODEDIRS=$(ROOTDIR) $(SOURCEDIR)
 		  INCDIRS=. ./include/
-		  DEPDIR =./deps
+		  DEPOBJDIR =./depsAndObjects
 		  STATLIBS=./staticLibs
 		  SHLIBS=./sharedLibs
 		  CPPC=g++
@@ -312,34 +396,48 @@ collapsed:: true
 		  CFLAGS=$(GENERALFLAGS) $(foreach D,$(INCDIRS),-I$(D)) $(OPT) $(DEPFLAGS)
 		  CFILESROOT=$(foreach D, $(ROOTDIR), $(wildcard $(D)/*.cpp))
 		  CFILESSOURCE=$(foreach D, $(SOURCEDIR), $(wildcard $(D)/*.cpp))
-		  CFILES=$(CFILESROOT) $(CFILESSOURCE)
-		  OBJECTS=$(patsubst %.cpp, %.o, $(CFILES))
-		  DEPFILES=$(patsubst %.cpp, %.d, $(CFILES))
-		  DEPFILES_final=$(patsubst .%.cpp, $(DEPDIR)%.d, $(CFILESROOT)) $(patsubst ./lib%.cpp, $(DEPDIR)%.d, $(CFILESSOURCE))
+		  
+		  OBJECTS=$(patsubst $(ROOTDIR)%.cpp, $(DEPOBJDIR)%.o, $(CFILESROOT)) $(patsubst $(SOURCEDIR)%.cpp, $(DEPOBJDIR)%.o, $(CFILESSOURCE))
+		  DEPFILES=$(patsubst $(ROOTDIR)%.cpp, $(DEPOBJDIR)%.d, $(CFILESROOT)) $(patsubst $(SOURCEDIR)%.cpp, $(DEPOBJDIR)%.d, $(CFILESSOURCE))
 		  LIBSTATIC_files=$(foreach D, $(STATLIBS), $(wildcard $(D)/lib*.a))
 		  LIBSHARED_files=$(foreach D, $(SHLIBS), $(wildcard $(D)/lib*.so))
 		  LIBSTATIC_names=$(patsubst $(STATLIBS)/lib%.a, %, $(LIBSTATIC_files))
 		  LIBSHARED_names=$(patsubst $(SHLIBS)/lib%.so, %, $(LIBSHARED_files))
 		  
-		  all: $(OUTPUT)
-		  	rm -rf $(OBJECTS)
-		      @echo
+		  
+		  
+		  all:$(OUTPUT)
+		  	@echo
 		  	@echo
 		  	@echo
 		  	@echo RUN THIS COMMAND:
 		  	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(SHLIBS)
 		  
+		  
+		  -include $(DEPFILES) 
+		  
 		  $(OUTPUT): $(OBJECTS)
-		  	mv $(DEPFILES) $(DEPDIR)
 		  	$(CPPC) $^ $(foreach D,$(STATLIBS),-L$(D)) $(foreach D,$(SHLIBS),-L$(D)) $(foreach D,$(LIBSTATIC_names),-l$(D)) $(foreach D,$(LIBSHARED_names),-l$(D)) -o $@
 		  
-		  %.o:%.cpp
+		  $(DEPOBJDIR)/%.o:$(ROOTDIR)/%.cpp
+		  	$(CPPC) $(CFLAGS) -c -o $@ $<
+		  
+		  $(DEPOBJDIR)/%.o:$(SOURCEDIR)/%.cpp
 		  	$(CPPC) $(CFLAGS) -c -o $@ $<
 		  
 		  mrproper:
-		  	rm -rf $(OUTPUT) $(OBJECTS) $(DEPFILES_final)
+		  	rm -rf $(OUTPUT) $(OBJECTS) $(DEPFILES)
 		  
-		  -include $(DEPFILES_final)
+		  OTHERstatic:$(OBJECTS)
+		  	$(CPPC) $^ $(foreach D,$(STATLIBS),-L$(D)) $(foreach D,$(LIBSTATIC_names),-l$(D)) -o $(OUTPUT)
+		  
+		  OTHERshared:$(OBJECTS)
+		  	$(CPPC) $^ $(foreach D,$(SHLIBS),-L$(D)) -o $(OUTPUT)
+		  	@echo
+		  	@echo
+		  	@echo
+		  	@echo RUN THIS COMMAND:
+		  	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(SHLIBS)
 		  ```
 	- ## Альфонсик статист (только чужие статические библиотеки)
 	  collapsed:: true
@@ -347,9 +445,8 @@ collapsed:: true
 		  OUTPUT=prog
 		  ROOTDIR=.
 		  SOURCEDIR=./lib
-		  CODEDIRS=$(ROOTDIR) $(SOURCEDIR)
 		  INCDIRS=. ./include/
-		  DEPDIR =./deps
+		  DEPOBJDIR =./depsAndObjects
 		  STATLIBS=./staticLibs
 		  CPPC=g++
 		  C++standart=-std=c++20
@@ -359,27 +456,30 @@ collapsed:: true
 		  CFLAGS=$(GENERALFLAGS) $(foreach D,$(INCDIRS),-I$(D)) $(OPT) $(DEPFLAGS)
 		  CFILESROOT=$(foreach D, $(ROOTDIR), $(wildcard $(D)/*.cpp))
 		  CFILESSOURCE=$(foreach D, $(SOURCEDIR), $(wildcard $(D)/*.cpp))
-		  CFILES=$(CFILESROOT) $(CFILESSOURCE)
-		  OBJECTS=$(patsubst %.cpp, %.o, $(CFILES))
-		  DEPFILES=$(patsubst %.cpp, %.d, $(CFILES))
-		  DEPFILES_final=$(patsubst .%.cpp, $(DEPDIR)%.d, $(CFILESROOT)) $(patsubst ./lib%.cpp, $(DEPDIR)%.d, $(CFILESSOURCE))
+		  
+		  OBJECTS=$(patsubst $(ROOTDIR)%.cpp, $(DEPOBJDIR)%.o, $(CFILESROOT)) $(patsubst $(SOURCEDIR)%.cpp, $(DEPOBJDIR)%.o, $(CFILESSOURCE))
+		  DEPFILES=$(patsubst $(ROOTDIR)%.cpp, $(DEPOBJDIR)%.d, $(CFILESROOT)) $(patsubst $(SOURCEDIR)%.cpp, $(DEPOBJDIR)%.d, $(CFILESSOURCE))
 		  LIBSTATIC_files=$(foreach D, $(STATLIBS), $(wildcard $(D)/lib*.a))
 		  LIBSTATIC_names=$(patsubst $(STATLIBS)/lib%.a, %, $(LIBSTATIC_files))
 		  
-		  all: $(OUTPUT)
-		  	rm -rf $(OBJECTS)
+		  
+		  
+		  all:$(OUTPUT)
+		  
+		  
+		  -include $(DEPFILES) 
 		  
 		  $(OUTPUT): $(OBJECTS)
-		  	mv $(DEPFILES) $(DEPDIR)
 		  	$(CPPC) $^ $(foreach D,$(STATLIBS),-L$(D)) $(foreach D,$(LIBSTATIC_names),-l$(D)) -o $@
 		  
-		  %.o:%.cpp
+		  $(DEPOBJDIR)/%.o:$(ROOTDIR)/%.cpp
+		  	$(CPPC) $(CFLAGS) -c -o $@ $<
+		  
+		  $(DEPOBJDIR)/%.o:$(SOURCEDIR)/%.cpp
 		  	$(CPPC) $(CFLAGS) -c -o $@ $<
 		  
 		  mrproper:
-		  	rm -rf $(OUTPUT) $(OBJECTS) $(DEPFILES_final)
-		  
-		  -include $(DEPFILES_final)
+		  	rm -rf $(OUTPUT) $(OBJECTS) $(DEPFILES)
 		  ```
 	- ## Альфонсик динамист (только чужие динамические библиотеки)
 	  collapsed:: true
@@ -387,9 +487,8 @@ collapsed:: true
 		  OUTPUT=prog
 		  ROOTDIR=.
 		  SOURCEDIR=./lib
-		  CODEDIRS=$(ROOTDIR) $(SOURCEDIR)
 		  INCDIRS=. ./include/
-		  DEPDIR =./deps
+		  DEPOBJDIR =./depsAndObjects
 		  SHLIBS=./sharedLibs
 		  CPPC=g++
 		  C++standart=-std=c++20
@@ -399,32 +498,36 @@ collapsed:: true
 		  CFLAGS=$(GENERALFLAGS) $(foreach D,$(INCDIRS),-I$(D)) $(OPT) $(DEPFLAGS)
 		  CFILESROOT=$(foreach D, $(ROOTDIR), $(wildcard $(D)/*.cpp))
 		  CFILESSOURCE=$(foreach D, $(SOURCEDIR), $(wildcard $(D)/*.cpp))
-		  CFILES=$(CFILESROOT) $(CFILESSOURCE)
-		  OBJECTS=$(patsubst %.cpp, %.o, $(CFILES))
-		  DEPFILES=$(patsubst %.cpp, %.d, $(CFILES))
-		  DEPFILES_final=$(patsubst .%.cpp, $(DEPDIR)%.d, $(CFILESROOT)) $(patsubst ./lib%.cpp, $(DEPDIR)%.d, $(CFILESSOURCE))
+		  
+		  OBJECTS=$(patsubst $(ROOTDIR)%.cpp, $(DEPOBJDIR)%.o, $(CFILESROOT)) $(patsubst $(SOURCEDIR)%.cpp, $(DEPOBJDIR)%.o, $(CFILESSOURCE))
+		  DEPFILES=$(patsubst $(ROOTDIR)%.cpp, $(DEPOBJDIR)%.d, $(CFILESROOT)) $(patsubst $(SOURCEDIR)%.cpp, $(DEPOBJDIR)%.d, $(CFILESSOURCE))
 		  LIBSHARED_files=$(foreach D, $(SHLIBS), $(wildcard $(D)/lib*.so))
 		  LIBSHARED_names=$(patsubst $(SHLIBS)/lib%.so, %, $(LIBSHARED_files))
 		  
-		  all: $(OUTPUT)
-		  	rm -rf $(OBJECTS)
-		      @echo
+		  
+		  
+		  all:$(OUTPUT)
+		  	@echo
 		  	@echo
 		  	@echo
 		  	@echo RUN THIS COMMAND:
 		  	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(SHLIBS)
 		  
+		  
+		  -include $(DEPFILES) 
+		  
 		  $(OUTPUT): $(OBJECTS)
-		  	mv $(DEPFILES) $(DEPDIR)
 		  	$(CPPC) $^ $(foreach D,$(SHLIBS),-L$(D)) $(foreach D,$(LIBSHARED_names),-l$(D)) -o $@
 		  
-		  %.o:%.cpp
+		  $(DEPOBJDIR)/%.o:$(ROOTDIR)/%.cpp
+		  	$(CPPC) $(CFLAGS) -c -o $@ $<
+		  
+		  $(DEPOBJDIR)/%.o:$(SOURCEDIR)/%.cpp
 		  	$(CPPC) $(CFLAGS) -c -o $@ $<
 		  
 		  mrproper:
-		  	rm -rf $(OUTPUT) $(OBJECTS) $(DEPFILES_final)
+		  	rm -rf $(OUTPUT) $(OBJECTS) $(DEPFILES)
 		  
-		  -include $(DEPFILES_final)
 		  ```
 	- ## Какие нахуй библиотеки (никаких библиотек)
 	  collapsed:: true
@@ -432,9 +535,8 @@ collapsed:: true
 		  OUTPUT=prog
 		  ROOTDIR=.
 		  SOURCEDIR=./lib
-		  CODEDIRS=$(ROOTDIR) $(SOURCEDIR)
 		  INCDIRS=. ./include/
-		  DEPDIR =./deps
+		  DEPOBJDIR =./depsAndObjects
 		  CPPC=g++
 		  C++standart=-std=c++20
 		  OPT=-O2
@@ -443,23 +545,26 @@ collapsed:: true
 		  CFLAGS=$(GENERALFLAGS) $(foreach D,$(INCDIRS),-I$(D)) $(OPT) $(DEPFLAGS)
 		  CFILESROOT=$(foreach D, $(ROOTDIR), $(wildcard $(D)/*.cpp))
 		  CFILESSOURCE=$(foreach D, $(SOURCEDIR), $(wildcard $(D)/*.cpp))
-		  CFILES=$(CFILESROOT) $(CFILESSOURCE)
-		  OBJECTS=$(patsubst %.cpp, %.o, $(CFILES))
-		  DEPFILES=$(patsubst %.cpp, %.d, $(CFILES))
-		  DEPFILES_final=$(patsubst .%.cpp, $(DEPDIR)%.d, $(CFILESROOT)) $(patsubst ./lib%.cpp, $(DEPDIR)%.d, $(CFILESSOURCE))
 		  
-		  all: $(OUTPUT)
-		  	rm -rf $(OBJECTS)
+		  OBJECTS=$(patsubst $(ROOTDIR)%.cpp, $(DEPOBJDIR)%.o, $(CFILESROOT)) $(patsubst $(SOURCEDIR)%.cpp, $(DEPOBJDIR)%.o, $(CFILESSOURCE))
+		  DEPFILES=$(patsubst $(ROOTDIR)%.cpp, $(DEPOBJDIR)%.d, $(CFILESROOT)) $(patsubst $(SOURCEDIR)%.cpp, $(DEPOBJDIR)%.d, $(CFILESSOURCE))
+		  
+		  
+		  all:$(OUTPUT)
+		  
+		  
+		  -include $(DEPFILES) 
 		  
 		  $(OUTPUT): $(OBJECTS)
-		  	mv $(DEPFILES) $(DEPDIR)
 		  	$(CPPC) $^ -o $@
 		  
-		  %.o:%.cpp
+		  $(DEPOBJDIR)/%.o:$(ROOTDIR)/%.cpp
+		  	$(CPPC) $(CFLAGS) -c -o $@ $<
+		  
+		  $(DEPOBJDIR)/%.o:$(SOURCEDIR)/%.cpp
 		  	$(CPPC) $(CFLAGS) -c -o $@ $<
 		  
 		  mrproper:
-		  	rm -rf $(OUTPUT) $(OBJECTS) $(DEPFILES_final)
+		  	rm -rf $(OUTPUT) $(OBJECTS) $(DEPFILES)
 		  
-		  -include $(DEPFILES_final)
 		  ```
