@@ -9,6 +9,12 @@
 - general g++ help - [[gpphelp]]
 - libraries guide - [[libhelp]]
 -
+- # GDB
+- general gdb help - [[gdbhelp]]
+-
+- # Markdown
+- [[markdownhelp]]
+-
 - # Make
 - general make help - [[makehelp]]
 -

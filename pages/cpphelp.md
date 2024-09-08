@@ -35,14 +35,14 @@ collapsed:: true
 	- ## func pointers
 		- Указатели на функции:
 		  тип (*имя_указателя) (типы_параметров);
-		- EXMP
+		- ```
 		  void hello();
 		  int main(){
 		       void (*message)(); //объявление
 		       message = hello;
 		       message();
 		  }
-		  ENDEXMP
+		  ```
 - # other stuff
   collapsed:: true
 	- std::getline(std::cin, str, ',');

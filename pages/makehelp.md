@@ -71,7 +71,7 @@ collapsed:: true
 		- ### header
 			- .h файлы для кода динамических библиотек
 		- ### source
-			- .cpp файлы для кода динамических библиотек
+			- .cpp файлы для кода динамических библиотек. Они должны называться sh*.cpp
 	- ## staticLibs
 	  collapsed:: true
 		- здесь хранятся статические библиотеки и автоматически складываются статические библиотеки, которые создаем сами
@@ -82,13 +82,16 @@ collapsed:: true
 			- .h файлы для кода статических библиотек
 		- ### source
 		  collapsed:: true
-			- .cpp файлы для кода статических библиотек
+			- .cpp файлы для кода статических библиотек. Они должны называться st*.cpp
 	- main.cpp
 	  Makefile
 	  можно другие файлы .h и .cpp
 - # Universal makefiles
-	- Чтобы все работало надо построить проект по Project structure выше или заменить названия папок в Makefile
-	- ### Команды make во всех последующих файлах:
+  collapsed:: true
+	- Чтобы все работало надо построить проект по Project structure выше или заменить названия папок в Makefile.
+	  
+	  !!!! Перед использованием Makefile ОЧЕНЬ рекомендуется пролистать ВСЕ что есть в projectstructure.
+	- ## Команды make во всех последующих файлах:
 	  collapsed:: true
 		- mrproper - удаление всех файлов, которые мог создавать make, возвращение к иходному коду
 		- libs - только лишь собрать библиотеки собственного написания (если такие имеются)
@@ -127,7 +130,7 @@ collapsed:: true
 		  C++standart=-std=c++20
 		  OPT=-O2
 		  DEPFLAGS=-MP -MD
-		  GENERALFLAGS=-Wall -Werror -Wextra $(C++standart)
+		  GENERALFLAGS=-Wall -Werror -Wextra $(C++standart) -g3
 		  CFLAGS=$(GENERALFLAGS) $(foreach D,$(INCDIRS),-I$(D)) $(OPT) $(DEPFLAGS)
 		  CFLAGS_static=$(GENERALFLAGS) $(foreach D,$(INCDIRSTATIC),-I$(D)) $(OPT) $(DEPFLAGS)
 		  CFLAGS_shared=$(GENERALFLAGS) $(foreach D,$(INCDIRSHARED),-I$(D)) $(OPT) $(DEPFLAGS)
@@ -245,7 +248,7 @@ collapsed:: true
 		  C++standart=-std=c++20
 		  OPT=-O2
 		  DEPFLAGS=-MP -MD
-		  GENERALFLAGS=-Wall -Werror -Wextra $(C++standart)
+		  GENERALFLAGS=-Wall -Werror -Wextra $(C++standart) -g3
 		  CFLAGS=$(GENERALFLAGS) $(foreach D,$(INCDIRS),-I$(D)) $(OPT) $(DEPFLAGS)
 		  CFLAGS_static=$(GENERALFLAGS) $(foreach D,$(INCDIRSTATIC),-I$(D)) $(OPT) $(DEPFLAGS)
 		  CFILESROOT=$(foreach D, $(ROOTDIR), $(wildcard $(D)/*.cpp))
@@ -315,7 +318,7 @@ collapsed:: true
 		  C++standart=-std=c++20
 		  OPT=-O2
 		  DEPFLAGS=-MP -MD
-		  GENERALFLAGS=-Wall -Werror -Wextra $(C++standart)
+		  GENERALFLAGS=-Wall -Werror -Wextra $(C++standart) -g3
 		  CFLAGS=$(GENERALFLAGS) $(foreach D,$(INCDIRS),-I$(D)) $(OPT) $(DEPFLAGS)
 		  CFLAGS_shared=$(GENERALFLAGS) $(foreach D,$(INCDIRSHARED),-I$(D)) $(OPT) $(DEPFLAGS)
 		  CFILESROOT=$(foreach D, $(ROOTDIR), $(wildcard $(D)/*.cpp))
@@ -392,7 +395,7 @@ collapsed:: true
 		  C++standart=-std=c++20
 		  OPT=-O2
 		  DEPFLAGS=-MP -MD
-		  GENERALFLAGS=-Wall -Werror -Wextra $(C++standart)
+		  GENERALFLAGS=-Wall -Werror -Wextra $(C++standart) -g3
 		  CFLAGS=$(GENERALFLAGS) $(foreach D,$(INCDIRS),-I$(D)) $(OPT) $(DEPFLAGS)
 		  CFILESROOT=$(foreach D, $(ROOTDIR), $(wildcard $(D)/*.cpp))
 		  CFILESSOURCE=$(foreach D, $(SOURCEDIR), $(wildcard $(D)/*.cpp))
@@ -494,7 +497,7 @@ collapsed:: true
 		  C++standart=-std=c++20
 		  OPT=-O2
 		  DEPFLAGS=-MP -MD
-		  GENERALFLAGS=-Wall -Werror -Wextra $(C++standart)
+		  GENERALFLAGS=-Wall -Werror -Wextra $(C++standart) -g3
 		  CFLAGS=$(GENERALFLAGS) $(foreach D,$(INCDIRS),-I$(D)) $(OPT) $(DEPFLAGS)
 		  CFILESROOT=$(foreach D, $(ROOTDIR), $(wildcard $(D)/*.cpp))
 		  CFILESSOURCE=$(foreach D, $(SOURCEDIR), $(wildcard $(D)/*.cpp))
@@ -541,7 +544,7 @@ collapsed:: true
 		  C++standart=-std=c++20
 		  OPT=-O2
 		  DEPFLAGS=-MP -MD
-		  GENERALFLAGS=-Wall -Werror -Wextra $(C++standart)
+		  GENERALFLAGS=-Wall -Werror -Wextra $(C++standart) -g3
 		  CFLAGS=$(GENERALFLAGS) $(foreach D,$(INCDIRS),-I$(D)) $(OPT) $(DEPFLAGS)
 		  CFILESROOT=$(foreach D, $(ROOTDIR), $(wildcard $(D)/*.cpp))
 		  CFILESSOURCE=$(foreach D, $(SOURCEDIR), $(wildcard $(D)/*.cpp))
