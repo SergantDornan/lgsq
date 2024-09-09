@@ -1,12 +1,14 @@
 - https://katex.org/docs/supported.html#environments
 - # General
-  collapsed:: true
 	- <div>
 	  div .... /div - игнорировать markdown в области (нужно писать в скобочках <>)
 	  ``` ..... ```  - для кода
 	  
+	  [Текст ссылки](#идентификатор-заголовка) - ссылка на заголовок
+	  
 	  </div>
 - # Math
+  collapsed:: true
 	- **!!!! далее могут дублироваться символы, очевидно в каких местах, но все таки**
 	- <div>
 	  Всякую математику нужно заключать в $.......$ (line) или если математики много можно писать блоком, который заключен в $$.......$$.
@@ -25,31 +27,48 @@
 		  \\ - break line
 		  \text{<some_test>} - just write some text
 		  
+		  \begin{array}{} ..... \end{array} - здесь надо писать столбки / матрицы, чтобы они не разбегались по всему тексту
+		  
+		  любое ограничение "области видимости" - {}. Т.е например
 		  </div>
+		  `$a_{n+2}$`=$a_{n+2}$
+		- {} `\{ \}`
+		- ```
+		  \begin{subarray}{l}
+		     0<j<n
+		  \end{subarray}}
+		  ```
+		   
+		  подпись под болшими операторами
 	- ## Matrix
-	  collapsed:: true
-		- `\begin{matrix}`
-		     `a & b \\`
-		     `c & d`
-		  `\end{matrix}`
+		- ```
+		  \begin{matrix}
+		     a & b \\
+		     c & d
+		  \end{matrix}
+		  ```
 		  
 		  \begin{matrix}
 		     a & b \\
 		     c & d
 		  \end{matrix}
-		- `\begin{pmatrix}`
-		     `a & b \\`
-		     `c & d`
-		  `\end{pmatrix}`
+		- ```
+		  \begin{pmatrix}
+		     a & b \\
+		     c & d
+		  \end{pmatrix}
+		  ```
 		  
 		  \begin{pmatrix}
 		     a & b \\
 		     c & d
 		  \end{pmatrix}
-		- `\begin{vmatrix}`
-		     `a & b \\`
-		     `c & d`
-		  `\end{vmatrix}`
+		- ```
+		  \begin{vmatrix}
+		     a & b \\
+		     c & d
+		  \end{vmatrix}
+		  ```
 		  
 		  \begin{vmatrix}
 		     a & b \\
@@ -117,12 +136,13 @@
 		  | inf⁡inf `\inf` | max⁡max `\max` | sup⁡sup `\sup` |  |
 		  | f⁡f `\operatorname*{f}` | f⁡f `\operatornamewithlimits{f}` |
 	- ## EXMP
-	  collapsed:: true
-		- `\sum_{`
-		  `\begin{subarray}{l}`
-		     `i\in\Lambda\\`
-		     `0<j<n`
-		  `\end{subarray}}`
+		- ```
+		  \LARGE{\sum_{
+		  \begin{subarray}{l}
+		     i\in\Lambda\\
+		     0<j<n
+		  \end{subarray}}}
+		  ```
 		  
 		  $$
 		  \LARGE{\sum_{
@@ -131,15 +151,24 @@
 		     0<j<n
 		  \end{subarray}}}
 		  $$
-		- `x = \begin{cases}`
-		     `a &\text{if } b \\`
-		     `c &\text{if } d`
-		  `\end{cases}`
+		- ```
+		  \LARGE{x} = \LARGE{\begin{cases}
+		     a &\text{if } b \\
+		     c &\text{if } d
+		  \end{cases}}
+		  ```
 		  
 		  $$
 		  \LARGE{x} = \LARGE{\begin{cases}
 		     a &\text{if } b \\
 		     c &\text{if } d
 		  \end{cases}}
+		  $$
+		- ```
+		  $$C_n^k = \frac{n!}{k!(n-k)!}$$
+		  ```
+		  
+		  $$
+		  \Large{C_n^k = \frac{n!}{k!(n-k)!}}
 		  $$
 	-
