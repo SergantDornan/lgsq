@@ -2,13 +2,13 @@
 collapsed:: true
 	- [[progproblems]]
 - # C++
-  collapsed:: true
 	- General c++ help -[[cpphelp]]
 	- STL help - [[stlhelp]]
 	- Threads - [[threadsc++]]
 	- Chrono - [[chrono]]
 	- Чтение и запись в файл [[filereading]]
 	- Regex [[Regex]]
+	- Exceptions [[exceptions]]
 - # Git
   collapsed:: true
 	- githelp - [[githelp]]
@@ -23,7 +23,6 @@ collapsed:: true
   collapsed:: true
 	- [[markdownhelp]]
 - # Make
-  collapsed:: true
 	- general make help - [[makehelp]]
 - # Lnx
   collapsed:: true

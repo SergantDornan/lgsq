@@ -19,7 +19,6 @@ collapsed:: true
 		  .erase(iteratorName) - удаление элемента по итератору
 		  .erase(startIterator, endIterator) - удаляет несколько элементов со start до (end - 1) включительно по итератору
 - # Iterator
-  collapsed:: true
 	- vector<type>::iterator iteratorName - объявление итератора, который по сути является умным указателем
 	  .begin() - возвращает итератор начала
 	  .end() - итератор конца, ~ '\0'
@@ -51,7 +50,6 @@ collapsed:: true
 	  .at(key) = value - попытка присвоить значение, если такого key нет будет исключение
 	  .erase(key)
 - # Set
-  collapsed:: true
 	- .insert(el) - добавить элемент
 	  .find(el) - возвращает итератор на элемент, если нашел, end() - если не нашел
 	  .erase(value) - удаление по значению, но не по итератору

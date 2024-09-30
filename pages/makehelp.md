@@ -92,6 +92,7 @@ collapsed:: true
 		  collapsed:: true
 			- .h файлы для кода статических библиотек
 		- ### source
+		  collapsed:: true
 			- .cpp файлы для кода статических библиотек.
 	- ## tests
 	  collapsed:: true
@@ -102,7 +103,6 @@ collapsed:: true
 	  Makefile
 	  можно другие файлы .h и .cpp
 - # Universal Makefile (для контестов)
-  collapsed:: true
 	- Чтобы все работало надо построить проект по Project structure выше или заменить названия папок в Makefile. Можно не создавать все папки и не класть все указанные файлы в папки, make сам разберется что у тебя есть и чего нет и все соберет как надо
 	  
 	  !!!! Перед использованием Makefile ОЧЕНЬ рекомендуется пролистать ВСЕ что есть в projectstructure.
@@ -125,7 +125,6 @@ collapsed:: true
 		- debugtst - запустить юнит тесты в gdb
 		- contestcode - сгенерировать файл с кодом, чтобы вставить его в контестик
 	- ## Makefile
-	  collapsed:: true
 		- collapsed:: true
 		  ```
 		  ANAL=analysis
@@ -157,6 +156,9 @@ collapsed:: true
 		  ContSource = $(ContCodeDir)/source
 		  ContOUTPUT = $(ContCodeDir)/filemaker
 		  ContFile = $(ContCodeDir)/code.cpp
+		  
+		  TSTfile = ./tests/testFile
+		  ANSfile = ./tests/answerFile
 		  
 		  INCDIRS=. ./include/ $(INCANAL) $(INCTST) $(ContINC)
 		  
@@ -304,7 +306,7 @@ collapsed:: true
 		  endif
 		  
 		  all:$(OUTPUT) $(ANALdepend) $(TSTdepend) $(CONTdepend)
-		  	@echo SUCCES
+		  	@echo ========= SUCCES ==========
 		  
 		  run:$(OUTPUT)
 		  	@./$(OUTPUT)
@@ -348,7 +350,7 @@ collapsed:: true
 		  	$(CPPC) $(OBJECTS) $(ANALOBJECTS) -Wl,--defsym=main=$(ANALENTRY) $(ISSTATIC) $(ISSHARED) $(foreach D,$(LIBSTATIC_names),-l$(D)) $(foreach D,$(LIBSHARED_names),-l$(D)) $(STATICLIBGEN_link) $(SHAREDLIBGEN_link) -o $@
 		  	$(INCLUDESHARED)
 		  
-		  $(TST):$(STATICdepend) $(SHAREDdepend) $(TSTOBJECTS) $(OBJECTS) $(ANALOBJECTS)
+		  $(TST):$(TSTfile) $(ANSfile) $(STATICdepend) $(SHAREDdepend) $(TSTOBJECTS) $(OBJECTS) $(ANALOBJECTS)
 		  	$(CPPC) $(OBJECTS) $(TSTOBJECTS) $(ANALOBJECTS) -Wl,--defsym=main=$(TSTENTRY) $(ISSTATIC) $(ISSHARED) $(foreach D,$(LIBSTATIC_names),-l$(D)) $(foreach D,$(LIBSHARED_names),-l$(D)) $(STATICLIBGEN_link) $(SHAREDLIBGEN_link) -o $@
 		  	$(INCLUDESHARED)
 		  
@@ -359,8 +361,14 @@ collapsed:: true
 		  $(ContFile):
 		  	touch $(ContFile)
 		  
+		  $(TSTfile):
+		  	touch $(TSTfile)
+		  
+		  $(ANSfile):
+		  	touch $(ANSfile)
+		  
 		  mrproper:
-		  	rm -rf $(OUTPUTS) $(OBJECTS) $(DEPFILES) $(STLIBGEN) $(SHLIBGEN) $(OBJECTSSTATIC) $(OBJECTSSHARED) $(ANALOBJECTS) $(TSTOBJECTS) $(CONTOBJECTS) $(ContFile)
+		  	rm -rf $(OUTPUTS) $(OBJECTS) $(DEPFILES) $(STLIBGEN) $(SHLIBGEN) $(OBJECTSSTATIC) $(OBJECTSSHARED) $(ANALOBJECTS) $(TSTOBJECTS) $(CONTOBJECTS) $(ContFile) $(TSTfile) $(ANSfile)
 		  
 		  $(STLIBGEN):$(OBJECTSSTATIC)
 		  	ar rc $(STLIBGEN) $(OBJECTSSTATIC)

@@ -30,6 +30,36 @@ collapsed:: true
 	  * **Используется для:** Преобразования между типами, которые **не связаны** никаким образом. 
 	  * **Безопасность:** Наиболее опасный, так как **не гарантирует** корректность преобразования.  Компилятор **не проверяет** допустимость преобразования. 
 	  * **Пример:** `int *ptr = reinterpret_cast<int*>(0x12345678);`
+- # Conversions
+	- Конвертация string в числовые типы
+	  
+	  
+	  *std::stoi, std::stol, std::stoll: для конвертации в int, long, long long соответственно.
+	  * std::stod, std::stof, std::stold: для конвертации в double, float, long double соответственно.
+	  * std::stoul, std::stoull: для конвертации в unsigned long, unsigned long long соответственно.
+	  * std::stoi: для конвертации в size_t.
+	- ## std::stringstream
+		- ```c++
+		  #include <sstream>
+		  ```
+		- С помощью std::stringstream можно конвертировать много что во много что
+		- Засовываешь в поток что угодно и можешь оттуда достать string, int или любой другой тип
+		- ```c++
+		  std::stringstream stream;
+		  stream << s; // Засунули в поток string s
+		  int x;
+		  stream >> x; // Достали int, конвертировали из string
+		  double y;
+		  stream >> y; // Достали double
+		  ```
+		- ```c++
+		  std::stringstream stream;
+		  int x = 10;
+		  stream << x; // Засунули int
+		  std::string s;
+		  stream >> s; // Достали string
+		  ```
+		- Для stringstream точно так же работают перегрузки << и >>
 - # functions
   collapsed:: true
 	- ## func pointers
@@ -67,6 +97,10 @@ collapsed:: true
 	  std::sort(begin,end,comp);
 	  ```
 - # other stuff
-  collapsed:: true
-	- std::getline(std::cin, str, ',');
+	- std::getline(std::cin, str, ','); - str это std::string, третий аргумент - разделитель до которого будет взята строка, если третий аргумент не писать, то будет взята строка полностью
 	  std::cin.getline(char*, 256, ',');
+	- ```c++
+	  #include <typeinfo>
+	  ```
+	  typeid(<var_name>) - информация о типе переменной
+	  typeid(<var_name>).name() - имя типа переменной
