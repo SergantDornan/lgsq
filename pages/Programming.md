@@ -1,7 +1,7 @@
 # Problems
-collapsed:: true
 	- [[progproblems]]
 - # C++
+  collapsed:: true
 	- General c++ help -[[cpphelp]]
 	- STL help - [[stlhelp]]
 	- Threads - [[threadsc++]]
