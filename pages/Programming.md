@@ -25,9 +25,11 @@
 - # Make
 	- general make help - [[makehelp]]
 - # Lnx
-  collapsed:: true
 	- general ubuntu commands - [[lnxhelp]]
 	- lnx filesystem help - [[lnxfilesystemhelp]]
 - # Windows
-  collapsed:: true
 	- Активация любой винды навсегда и MS office навсегда по этой ссылке  https://github.com/massgravel/Microsoft-Activation-Scripts
+- # Architecture and Assembly
+	- [[ASM tasks]]
+	-
+-
