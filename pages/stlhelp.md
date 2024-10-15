@@ -19,10 +19,42 @@ collapsed:: true
 		  .erase(iteratorName) - удаление элемента по итератору
 		  .erase(startIterator, endIterator) - удаляет несколько элементов со start до (end - 1) включительно по итератору
 - # Iterator
+  collapsed:: true
 	- vector<type>::iterator iteratorName - объявление итератора, который по сути является умным указателем
 	  .begin() - возвращает итератор начала
 	  .end() - итератор конца, ~ '\0'
 	  advance(iteratorName, i) - смещение итератора на i
+- # insert_iterator / inserter
+  collapsed:: true
+	- std::insert_iterator<Container> <name>(CONSTRUCTOR)
+	- В конструкторе надо указать два аргумента: контейнер и начальный итератор, с которого начнется вставка
+	- Объявляет итератор, по которому можно вставлять значения в контейнер. Вставка осуществляется просто присвоением итератору некоего значения. После вставки итератор инкрементируется на 1
+	- ```c++
+	  std::vector<int> v = {1,2,3};
+	  std::insert_iterator<std::vector<int>> it(v, v.begin());
+	  it = 0;
+	  std::cout << v; // 0,1,2,3
+	  it = 500;
+	  std::cout << v; //0, 500, 1, 2, 3
+	  it = 300;
+	  std::cout << v; //0,500,300,1,2,3
+	  ```
+	- ```c++
+	  std::map<int,int> mp = {{1,2},{3,4}};
+	  std::insert_iterator<std::map<int,int>> it(mp, mp.begin());
+	  it = {0,0}; //mp = {0,0} {1,2} {3,4}
+	  it = {100,100}; //mp = {0,0} {100,100} {1,2} {3,4}
+	  ```
+	- insert_iterator нельзя просто так инкрементровать или разименовать
+	- inserter - удобный конструктор для insert_iterator, принимает на вход контейнер и итератор контейнера, возвращает inster_iterator
+	- Можно его воспринимать как
+	  ```c++
+	  template<class Container>
+	  std::insert_iterator<Container> inserter(Container& c, typename Container::iterator i)
+	  {
+	      return std::insert_iterator<Container>(c, i);
+	  }
+	  ```
 - # List (двусвязный)
   collapsed:: true
 	- .push_back(el) - в конец
@@ -50,6 +82,7 @@ collapsed:: true
 	  .at(key) = value - попытка присвоить значение, если такого key нет будет исключение
 	  .erase(key)
 - # Set
+  collapsed:: true
 	- .insert(el) - добавить элемент
 	  .find(el) - возвращает итератор на элемент, если нашел, end() - если не нашел
 	  .erase(value) - удаление по значению, но не по итератору

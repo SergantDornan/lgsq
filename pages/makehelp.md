@@ -126,7 +126,7 @@ collapsed:: true
 		- contestcode - сгенерировать файл с кодом, чтобы вставить его в контестик
 	- ## Makefile
 		- collapsed:: true
-		  ```
+		  ```make
 		  ANAL=analysis
 		  OUTPUT=outprog
 		  TST=test
@@ -350,7 +350,7 @@ collapsed:: true
 		  	$(CPPC) $(OBJECTS) $(ANALOBJECTS) -Wl,--defsym=main=$(ANALENTRY) $(ISSTATIC) $(ISSHARED) $(foreach D,$(LIBSTATIC_names),-l$(D)) $(foreach D,$(LIBSHARED_names),-l$(D)) $(STATICLIBGEN_link) $(SHAREDLIBGEN_link) -o $@
 		  	$(INCLUDESHARED)
 		  
-		  $(TST):$(TSTfile) $(ANSfile) $(STATICdepend) $(SHAREDdepend) $(TSTOBJECTS) $(OBJECTS) $(ANALOBJECTS)
+		  $(TST):$(ANSfile) $(TSTfile) $(STATICdepend) $(SHAREDdepend) $(TSTOBJECTS) $(OBJECTS) $(ANALOBJECTS)
 		  	$(CPPC) $(OBJECTS) $(TSTOBJECTS) $(ANALOBJECTS) -Wl,--defsym=main=$(TSTENTRY) $(ISSTATIC) $(ISSHARED) $(foreach D,$(LIBSTATIC_names),-l$(D)) $(foreach D,$(LIBSHARED_names),-l$(D)) $(STATICLIBGEN_link) $(SHAREDLIBGEN_link) -o $@
 		  	$(INCLUDESHARED)
 		  

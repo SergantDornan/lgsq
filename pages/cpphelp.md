@@ -31,6 +31,7 @@ collapsed:: true
 	  * **Безопасность:** Наиболее опасный, так как **не гарантирует** корректность преобразования.  Компилятор **не проверяет** допустимость преобразования. 
 	  * **Пример:** `int *ptr = reinterpret_cast<int*>(0x12345678);`
 - # Conversions
+  collapsed:: true
 	- Конвертация string в числовые типы
 	  
 	  
@@ -61,9 +62,7 @@ collapsed:: true
 		  ```
 		- Для stringstream точно так же работают перегрузки << и >>
 - # functions
-  collapsed:: true
 	- ## func pointers
-	  collapsed:: true
 		- Указатели на функции:
 		  тип (*имя_указателя) (типы_параметров);
 		- ```
@@ -75,7 +74,6 @@ collapsed:: true
 		  }
 		  ```
 	- ## Lambda
-	  collapsed:: true
 		- ```c++
 		  auto F = [&solution, &power](long double xi) -> long double{
 		  		long double result = 0;
@@ -97,6 +95,7 @@ collapsed:: true
 	  std::sort(begin,end,comp);
 	  ```
 - # other stuff
+  collapsed:: true
 	- std::getline(std::cin, str, ','); - str это std::string, третий аргумент - разделитель до которого будет взята строка, если третий аргумент не писать, то будет взята строка полностью
 	  std::cin.getline(char*, 256, ',');
 	- ```c++

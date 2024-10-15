@@ -2,7 +2,6 @@
   #include <regex>
   ```
 - # Regexes
-  collapsed:: true
 	- ```c++
 	  std::regex <regex_name>(<regex>); // объявление regex
 	  ```
@@ -104,12 +103,10 @@
 	  }
 	  ```
 - # Разные функции
-  collapsed:: true
 	- ## std::regex_replace
-	  collapsed:: true
 		- ```c++
 		  std::string str = "Cat fat rat";
-		  std::regex reg([ft]at);
+		  std::regex reg("[ft]at");
 		  std::string newstr = std::regex_replace(str,reg,"aboba");
 		  std::cout << newstr;
 		  ```
