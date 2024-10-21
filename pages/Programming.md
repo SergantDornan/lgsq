@@ -9,6 +9,7 @@ collapsed:: true
 	- Чтение и запись в файл [[filereading]]
 	- Regex [[Regex]]
 	- Exceptions [[exceptions]]
+	  Errors [[cpperrors]]
 - # Git
   collapsed:: true
 	- githelp - [[githelp]]
