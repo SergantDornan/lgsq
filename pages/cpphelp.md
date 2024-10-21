@@ -88,6 +88,28 @@ collapsed:: true
 		  [&] - захватить все что есть по ссылке
 		- (long double xi) - аргументы функции
 		- -> long double  - возвращаемое значение
+		- ### интересный факт
+			- Нельзя передвать лямда функцию и пытаться интерпретировать ее как указатель на функицю
+			- ```c++
+			  bool foo(bool(*lamd)(int), int x){
+			    return lamd(x);
+			  }
+			  int main(){
+			    std::cout << foo([](int x){ return x == 0;}, 5) << std::endl;
+			    //Будет ошибка, не сможет преобразовать [](int x){ return x == 0;}
+			    // к указателю bool(*lamd)(int)
+			  }
+			  ```
+			- Решение: использовать std::function
+			- ```c++
+			  bool foo(std::function<bool(int)> lamd, int x){
+			    return lamd(x);
+			  }
+			  int main(){
+			    std::cout << foo([](int x){ return x == 0;}, 5) << std::endl;
+			    //Все работает, выведется false
+			  }
+			  ```
 - # Comparator
   collapsed:: true
 	- ```c++

@@ -116,7 +116,6 @@
 		  Cat aboba aboba
 		  ```
 	- ## std::regex_search
-	  collapsed:: true
 		- Возвращает true, если что то нашла, возвращает false если ничего нет.
 		  ```c++
 		  std::string s = "ajmco aj lioj aio";
