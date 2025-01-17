@@ -22,7 +22,6 @@ collapsed:: true
   collapsed:: true
 	- general gdb help - [[gdbhelp]]
 - # Markdown
-  collapsed:: true
 	- [[markdownhelp]]
 - # Make
   collapsed:: true

@@ -19,7 +19,6 @@
 	  ```
 	  </div>
 	- ## General
-	  collapsed:: true
 		- <div>\LARGE{smth}
 		  \Large{}
 		  \Huge{}
@@ -46,7 +45,6 @@
 		  \neq
 		  ```
 	- ## Matrix
-	  collapsed:: true
 		- ```
 		  \begin{matrix}
 		     a & b \\
@@ -115,14 +113,12 @@
 		  | ∭∭ `\iiint` | ∫∫ `\smallint` | ⨄⨄ `\biguplus` | ⋃⋃ `\bigcup` |
 		  | ∮∮ `\oint` | ∯∬​ `\oiint` | ∰∭​ `\oiiint` | ⨆⨆ `\bigsqcup` |
 	- ## Fractions
-	  collapsed:: true
 		- | *a*​ `\frac{a}{b}` | 𝑎𝑏*b**a*​ `\tfrac{a}{b}` | (𝑎𝑎+1](*a*+1*a*​] `\genfrac ( ] {2pt}{1}a{a+1}` |
 		  | 𝑎𝑏*b**a*​ `{a \over b}` | 𝑎𝑏*b**a*​ `\dfrac{a}{b}` | 𝑎𝑏+1*b*+1*a*​ `{a \above{2pt} b+1}` |
 		  | 𝑎/𝑏*a*/*b* `a/b` |  | 𝑎1+1𝑏1+*b*1​*a*​ `\cfrac{a}{1 + \cfrac{1}{b}}` |
 		  
 		  ![image.png](../assets/image_1725804348868_0.png)
 	- ## Funcs and math operators
-	  collapsed:: true
 		- |  |
 		  | arcsin `\arcsin` | cosec⁡cosec `\cosec` | deg⁡deg `\deg` | sec⁡sec `\sec` |
 		  | arccos⁡arccos `\arccos` | cosh⁡cosh `\cosh` | dim⁡dim `\dim` | sin⁡sin `\sin` |
@@ -140,7 +136,6 @@
 		  | inf⁡inf `\inf` | max⁡max `\max` | sup⁡sup `\sup` |  |
 		  | f⁡f `\operatorname*{f}` | f⁡f `\operatornamewithlimits{f}` |
 	- ## EXMP
-	  collapsed:: true
 		- ```
 		  \LARGE{\sum_{
 		  \begin{subarray}{l}
