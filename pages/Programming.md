@@ -34,7 +34,6 @@ collapsed:: true
   collapsed:: true
 	- Активация любой винды навсегда и MS office навсегда по этой ссылке  https://github.com/massgravel/Microsoft-Activation-Scripts
 - # Architecture and Assembly
-  collapsed:: true
 	- [[ASM tasks]]
 	-
 -

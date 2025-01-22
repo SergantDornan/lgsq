@@ -19,6 +19,7 @@
 	  ```
 	  </div>
 	- ## General
+	  collapsed:: true
 		- <div>\LARGE{smth}
 		  \Large{}
 		  \Huge{}
@@ -45,6 +46,7 @@
 		  \neq
 		  ```
 	- ## Matrix
+	  collapsed:: true
 		- ```
 		  \begin{matrix}
 		     a & b \\
@@ -119,6 +121,7 @@
 		  
 		  ![image.png](../assets/image_1725804348868_0.png)
 	- ## Funcs and math operators
+	  collapsed:: true
 		- |  |
 		  | arcsin `\arcsin` | cosec⁡cosec `\cosec` | deg⁡deg `\deg` | sec⁡sec `\sec` |
 		  | arccos⁡arccos `\arccos` | cosh⁡cosh `\cosh` | dim⁡dim `\dim` | sin⁡sin `\sin` |
