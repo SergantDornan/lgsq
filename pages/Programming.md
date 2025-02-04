@@ -22,6 +22,7 @@ collapsed:: true
   collapsed:: true
 	- general gdb help - [[gdbhelp]]
 - # Markdown
+  collapsed:: true
 	- [[markdownhelp]]
 - # Make
   collapsed:: true
@@ -34,6 +35,13 @@ collapsed:: true
   collapsed:: true
 	- Активация любой винды навсегда и MS office навсегда по этой ссылке  https://github.com/massgravel/Microsoft-Activation-Scripts
 - # Architecture and Assembly
+  collapsed:: true
 	- [[ASM tasks]]
 	-
--
+- # Java
+	- [[compiler and virtual machine]]
+	- [[maven]]
+	- [[classes]]
+	-
+	-
+	-
